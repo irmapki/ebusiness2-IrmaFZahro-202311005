@@ -9,11 +9,15 @@ use Illuminate\Validation\Rules;
 
 class AdminController extends Controller
 {
-    // READ - Tampilkan semua user
+    // DASHBOARD - Statistik + daftar user
     public function index()
     {
+        $totalUsers = User::count();
+        $adminCount = User::where('role', 'admin')->count();
+        $userCount = User::where('role', 'user')->count();
         $users = User::all();
-        return view('admin.dashboard', compact('users'));
+
+        return view('admin.dashboard', compact('totalUsers', 'adminCount', 'userCount', 'users'));
     }
 
     // CREATE - Form tambah user
@@ -49,7 +53,7 @@ class AdminController extends Controller
         return view('admin.users.edit', compact('user'));
     }
 
-    // UPDATE - Update data user
+    // UPDATE - Update user
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -69,6 +73,7 @@ class AdminController extends Controller
             $request->validate([
                 'password' => ['confirmed', Rules\Password::defaults()],
             ]);
+
             $user->update([
                 'password' => Hash::make($request->password),
             ]);
@@ -81,7 +86,6 @@ class AdminController extends Controller
     // DELETE - Hapus user
     public function destroy(User $user)
     {
-        // Cegah admin menghapus dirinya sendiri
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.dashboard')
                 ->with('error', 'Anda tidak bisa menghapus akun sendiri!');

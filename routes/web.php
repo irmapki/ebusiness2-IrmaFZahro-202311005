@@ -2,41 +2,44 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Redirect dashboard berdasarkan role
+// Dashboard biasa
 Route::get('/dashboard', function () {
-    if (auth()->user()->isAdmin()) {
-        return redirect()->route('admin.dashboard');
-    }
-    return redirect()->route('user.dashboard');
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// User Dashboard
-Route::middleware(['auth'])->group(function () {
-    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
-});
-
-// Admin routes + CRUD User
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/users/create', [AdminController::class, 'create'])->name('admin.users.create');
-    Route::post('/users', [AdminController::class, 'store'])->name('admin.users.store');
-    Route::get('/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/users/{user}', [AdminController::class, 'update'])->name('admin.users.update');
-    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
-});
-
-// Profile
+// Middleware AUTH
 Route::middleware('auth')->group(function () {
+
+    // PROFILE ROUTES
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ADMIN ROUTES
+    Route::prefix('admin')->name('admin.')->group(function () {
+
+        // Admin Dashboard
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+        // CRUD User (manual, bukan resource)
+        Route::get('/users/create', [AdminController::class, 'create'])->name('users.create');
+        Route::post('/users', [AdminController::class, 'store'])->name('users.store');
+
+        Route::get('/users/{user}/edit', [AdminController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [AdminController::class, 'update'])->name('users.update');
+
+        Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
+
+        // PRODUCTS (resource)
+        Route::resource('products', ProductController::class);
+    });
 });
 
 require __DIR__.'/auth.php';

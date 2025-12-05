@@ -4,12 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
 class AdminController extends Controller
 {
-    // DASHBOARD - Statistik + daftar user
+    // DASHBOARD ADMIN - Method baru ini!
+    public function dashboard()
+    {
+        $totalUsers = User::count();
+        $adminCount = User::where('role', 'admin')->count();
+        $userCount = User::where('role', 'user')->count();
+        
+        $totalProducts = Product::count();
+        $activeProducts = Product::where('is_active', true)->count();
+        
+        return view('admin.dashboard', compact(
+            'totalUsers', 
+            'adminCount', 
+            'userCount',
+            'totalProducts',
+            'activeProducts'
+        ));
+    }
+
+    // USER MANAGEMENT INDEX
     public function index()
     {
         $totalUsers = User::count();
@@ -17,7 +37,7 @@ class AdminController extends Controller
         $userCount = User::where('role', 'user')->count();
         $users = User::all();
 
-        return view('admin.dashboard', compact('totalUsers', 'adminCount', 'userCount', 'users'));
+        return view('admin.users.index', compact('totalUsers', 'adminCount', 'userCount', 'users'));
     }
 
     // CREATE - Form tambah user
@@ -43,7 +63,7 @@ class AdminController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil ditambahkan!');
     }
 
@@ -79,7 +99,7 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil diupdate!');
     }
 
@@ -87,13 +107,13 @@ class AdminController extends Controller
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
-            return redirect()->route('admin.dashboard')
+            return redirect()->route('admin.users.index')
                 ->with('error', 'Anda tidak bisa menghapus akun sendiri!');
         }
 
         $user->delete();
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil dihapus!');
     }
 }

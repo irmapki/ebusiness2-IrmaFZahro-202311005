@@ -30,16 +30,16 @@ class AdminController extends Controller
     }
 
     // USER MANAGEMENT INDEX
+    // Users Index - TAMBAHKAN INI
     public function index()
     {
+        $users = User::latest()->get();
         $totalUsers = User::count();
         $adminCount = User::where('role', 'admin')->count();
         $userCount = User::where('role', 'user')->count();
-        $users = User::all();
-
-        return view('admin.users.index', compact('totalUsers', 'adminCount', 'userCount', 'users'));
+        
+        return view('admin.users.index', compact('users', 'totalUsers', 'adminCount', 'userCount'));
     }
-
     // CREATE - Form tambah user
     public function create()
     {

@@ -16,7 +16,7 @@
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </div>
                     <span class="text-xl font-bold">Admin Panel</span>
@@ -25,29 +25,55 @@
 
             <!-- Navigation -->
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-700 shadow-lg' : 'hover:bg-indigo-700/50' }} transition-all duration-200">
+                <!-- Dashboard -->
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-700 shadow-lg' : 'hover:bg-indigo-700/50' }} transition-all duration-200">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
                     <span class="font-medium">Dashboard</span>
                 </a>
 
-                <a href="{{ route('admin.products.index') }}" class="flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.products.*') ? 'bg-indigo-700 shadow-lg' : 'hover:bg-indigo-700/50' }} transition-all duration-200">
+                <!-- Orders - NEW! -->
+                <a href="{{ route('admin.orders.index') }}" 
+                   class="flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.orders.*') ? 'bg-indigo-700 shadow-lg' : 'hover:bg-indigo-700/50' }} transition-all duration-200 relative">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                     </svg>
-                    <span class="font-medium">Produk</span>
+                    <span class="font-medium">Orders</span>
+                    @php
+                        $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->count();
+                    @endphp
+                    @if($pendingOrdersCount > 0)
+                    <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+                        {{ $pendingOrdersCount }}
+                    </span>
+                    @endif
                 </a>
 
-                <a href="{{ route('admin.users.create') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-indigo-700/50 transition-all duration-200">
+                <!-- Manage Users -->
+                <a href="{{ route('admin.users.index') }}" 
+                   class="flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.users.*') ? 'bg-indigo-700 shadow-lg' : 'hover:bg-indigo-700/50' }} transition-all duration-200">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
-                    <span class="font-medium">Users</span>
+                    <span class="font-medium">Manage Users</span>
                 </a>
 
+                <!-- Products -->
+                <a href="{{ route('admin.products.index') }}" 
+                   class="flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.products.*') ? 'bg-indigo-700 shadow-lg' : 'hover:bg-indigo-700/50' }} transition-all duration-200">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    <span class="font-medium">Products</span>
+                </a>
+
+                <!-- Divider -->
                 <div class="pt-4 mt-4 border-t border-indigo-700">
-                    <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-indigo-700/50 transition-all duration-200">
+                    <!-- Settings -->
+                    <a href="{{ route('admin.profile.edit') }}" 
+                       class="flex items-center px-4 py-3 rounded-lg hover:bg-indigo-700/50 transition-all duration-200">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -57,18 +83,18 @@
                 </div>
             </nav>
 
-            <!-- User Info -->
+            <!-- User Info & Logout -->
             <div class="p-4 border-t border-indigo-700">
-                <div class="flex items-center">
+                <div class="flex items-center mb-3">
                     <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center">
                         <span class="text-sm font-bold">{{ substr(Auth::user()->name, 0, 2) }}</span>
                     </div>
                     <div class="ml-3 flex-1">
-                        <p class="text-sm font-medium">{{ Auth::user()->name }}</p>
-                        <p class="text-xs text-indigo-300">{{ Auth::user()->email }}</p>
+                        <p class="text-sm font-medium truncate">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-indigo-300 truncate">{{ Auth::user()->email }}</p>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors duration-200">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,25 +113,32 @@
                 <div class="flex items-center justify-between px-6 py-4">
                     <div>
                         @if (isset($header))
-                            <div class="text-2xl font-bold text-gray-800">
-                                {{ $header }}
-                            </div>
+                            {{ $header }}
                         @endif
                     </div>
                     <div class="flex items-center space-x-4">
                         <!-- Notifications -->
-                        <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+                        <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}"
+                           class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                             </svg>
-                        </button>
+                            @php
+                                $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->count();
+                            @endphp
+                            @if($pendingOrdersCount > 0)
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full px-1.5 leading-none animate-pulse">
+                                {{ $pendingOrdersCount }}
+                            </span>
+                            @endif
+                        </a>
                         
-                        <!-- Mobile Menu Button -->
-                        <button class="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                            </svg>
-                        </button>
+                        <!-- User Avatar (Mobile) -->
+                        <div class="md:hidden">
+                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold">
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>

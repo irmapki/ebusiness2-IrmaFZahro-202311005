@@ -12,15 +12,24 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'category', // ← TAMBAH INI
+        'category_id',
         'price',
         'stock',
-        'image',
-        'is_active'
+        'image'
     ];
 
-    protected $casts = [
-        'price' => 'decimal:2',
-        'is_active' => 'boolean',
-    ];
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category?->name ?? '-';
+    }
+
+    public function getCategoryIconAttribute()
+    {
+        return $this->category?->icon ?? '📦';
+    }
 }

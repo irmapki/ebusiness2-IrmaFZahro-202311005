@@ -3,42 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Show profile edit page (role-based).
      */
-    public function edit(Request $request): View
-    {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
-
+public function edit(Request $request): View
+{
+    $user = $request->user();
+    
+    return $user->isAdmin()
+        ? view('admin.profile.edit', compact('user'))
+        : view('user.profile.edit', compact('user'));
+}
     /**
-     * Update the user's profile information.
+     * Update profile data.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::back()->with('status', 'profile-updated');
     }
 
     /**
-     * Delete the user's account.
+     * Delete user account.
      */
     public function destroy(Request $request): RedirectResponse
     {

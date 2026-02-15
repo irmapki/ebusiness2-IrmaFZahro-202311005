@@ -1,6 +1,6 @@
 <x-admin-layout>
     <x-slot name="header">
-        🏠 Dashboard
+        Dashboard
     </x-slot>
 
     <!-- Welcome Banner -->

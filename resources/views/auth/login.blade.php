@@ -4,15 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ShowMy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #fae8ff 0%, #e9d5ff 25%, #fecaca 50%, #fed7aa 75%, #fbcfe8 100%);
+            background-attachment: fixed;
+        }
+        
+        .floating-shape {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #f0abfc, #e879f9);
+            top: -50px;
+            left: -50px;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 5s;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+            top: 40%;
+            right: 10%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+        
+        .card-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo-glow {
+            box-shadow: 0 8px 32px rgba(244, 114, 182, 0.3);
+        }
+        
+        .input-focus:focus {
+            border-color: #f472b6;
+            box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.1);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #f472b6 0%, #c084fc 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.4);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-300 via-blue-500 to-blue-900 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <!-- Floating Background Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+
+    <div class="w-full max-w-md relative z-10">
         <!-- Logo -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-4">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-3xl shadow-2xl mb-4 logo-glow">
                 <svg
-                    class="w-10 h-10 text-blue-600"
+                    class="w-11 h-11 text-pink-500"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -20,24 +105,22 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 >
-                    <!-- Shopping Cart -->
                     <circle cx="9" cy="21" r="1" />
                     <circle cx="20" cy="21" r="1" />
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
             </div>
-
-            <h1 class="text-3xl font-bold text-white">ShowMy</h1>
-            <p class="text-blue-100 mt-2">Welcome back! Please login to your account.</p>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">ShowMy</h1>
+            <p class="text-purple-700 mt-2 font-medium">Welcome back! Please login to your account.</p>
         </div>
 
         <!-- Login Card -->
-        <div class="bg-white rounded-2xl shadow-2xl p-8">
+        <div class="card-glass rounded-3xl shadow-2xl p-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Sign In</h2>
 
             <!-- Session Status -->
             @if (session('status'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-lg">
                     {{ session('status') }}
                 </div>
             @endif
@@ -46,41 +129,51 @@
                 @csrf
 
                 <!-- Email -->
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <div class="mb-5">
+                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('email') border-red-500 @enderror">
+                           class="input-focus w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none transition-all @error('email') border-red-400 @enderror">
                     @error('email')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
                     @enderror
                 </div>
 
                 <!-- Password -->
-                <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <div class="mb-5">
+                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                     <input id="password" type="password" name="password" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('password') border-red-500 @enderror">
+                           class="input-focus w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none transition-all @error('password') border-red-400 @enderror">
                     @error('password')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-red-600 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
                     @enderror
                 </div>
 
-                <!-- Remember Me -->
+                <!-- Remember Me & Forgot Password -->
                 <div class="flex items-center justify-between mb-6">
-                    <label class="flex items-center">
-                        <input type="checkbox" name="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    <label class="flex items-center group cursor-pointer">
+                        <input type="checkbox" name="remember" class="w-4 h-4 text-pink-500 border-gray-300 rounded focus:ring-pink-500 cursor-pointer">
+                        <span class="ml-2 text-sm text-gray-700 group-hover:text-pink-600 transition">Remember me</span>
                     </label>
 
                     @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800">
+                        <a href="{{ route('password.request') }}" class="text-sm text-pink-600 hover:text-pink-700 font-semibold transition">
                             Forgot password?
                         </a>
                     @endif
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-900 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-900 transform hover:scale-105 transition-all duration-200 shadow-lg">
+                <button type="submit" class="btn-gradient w-full text-white py-3.5 rounded-xl font-semibold shadow-lg">
                     Sign In
                 </button>
 
@@ -88,7 +181,7 @@
                 <div class="mt-6 text-center">
                     <p class="text-gray-600 text-sm">
                         Don't have an account?
-                        <a href="{{ route('register') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                        <a href="{{ route('register') }}" class="text-pink-600 hover:text-pink-700 font-bold transition">
                             Sign Up
                         </a>
                     </p>
@@ -98,7 +191,7 @@
 
         <!-- Footer -->
         <div class="text-center mt-6">
-            <p class="text-white text-sm opacity-75">© 2025 My Storage. All rights reserved.</p>
+            <p class="text-purple-700 text-sm font-medium opacity-75">© 2025 ShowMy. All rights reserved.</p>
         </div>
     </div>
 </body>
